@@ -1,1 +1,173 @@
+package br.com.pokemon;
 
+import br.com.pokemon.dao.PokemonDAO;
+import br.com.pokemon.model.Pokemon;
+import br.com.pokemon.service.ConsomeApi;
+
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner scanner =
+                new Scanner(System.in);
+
+        ConsomeApi api =
+                new ConsomeApi();
+
+        PokemonDAO dao =
+                new PokemonDAO();
+
+        int opcao;
+
+        do {
+
+            System.out.println("\n======================");
+            System.out.println("      POKÉDEX");
+            System.out.println("======================");
+
+            System.out.println(
+                    "1 - Visualizar Pokémons"
+            );
+
+            System.out.println(
+                    "2 - Adicionar favorito"
+            );
+
+            System.out.println(
+                    "3 - Ver favoritos"
+            );
+
+            System.out.println(
+                    "4 - Excluir favorito"
+            );
+
+            System.out.println(
+                    "0 - Sair"
+            );
+
+            System.out.print(
+                    "\nEscolha uma opção: "
+            );
+
+            opcao = scanner.nextInt();
+
+            scanner.nextLine();
+
+
+            switch (opcao) {
+
+                // OPÇÃO 1
+                case 1:
+
+                    List<String> pokemons =
+                            api.listarPokemons();
+
+                    System.out.println(
+                            "\n--- POKÉMONS DISPONÍVEIS ---"
+                    );
+
+                    for (String nome : pokemons) {
+
+                        System.out.println(nome);
+                    }
+
+                    break;
+
+
+                // OPÇÃO 2
+                case 2:
+
+                    System.out.print(
+                            "Digite o nome do Pokémon: "
+                    );
+
+                    String nome =
+                            scanner.nextLine();
+
+                    Pokemon pokemon =
+                            api.buscarPokemon(nome);
+
+                    if (pokemon != null) {
+
+                        System.out.println(
+                                pokemon
+                        );
+
+                        dao.salvar(pokemon);
+                    }
+
+                    break;
+
+
+                // OPÇÃO 3
+                case 3:
+
+                    List<Pokemon> favoritos =
+                            dao.listarFavoritos();
+
+                    System.out.println(
+                            "\n--- FAVORITOS ---"
+                    );
+
+                    if (favoritos.isEmpty()) {
+
+                        System.out.println(
+                                "Nenhum favorito cadastrado."
+                        );
+
+                    } else {
+
+                        for (
+                                Pokemon favorito
+                                : favoritos
+                        ) {
+
+                            System.out.println(
+                                    favorito
+                            );
+                        }
+                    }
+
+                    break;
+
+
+                // OPÇÃO 4
+                case 4:
+
+                    System.out.print(
+                            "Digite o ID do Pokémon que deseja excluir: "
+                    );
+
+                    int id =
+                            scanner.nextInt();
+
+                    dao.excluir(id);
+
+                    break;
+
+
+                // SAIR
+                case 0:
+
+                    System.out.println(
+                            "Programa encerrado!"
+                    );
+
+                    break;
+
+
+                default:
+
+                    System.out.println(
+                            "Opção inválida!"
+                    );
+            }
+
+        } while (opcao != 0);
+
+        scanner.close();
+    }
+}
